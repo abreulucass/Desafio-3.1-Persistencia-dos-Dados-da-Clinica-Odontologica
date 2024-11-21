@@ -131,6 +131,20 @@ export class Consultorio{
         );
     }
 
+    buscarAgendamento(CPF){
+        const agora = DateTime.now();
+
+        const agendamento = this.#agenda_de_consultas.find(ag => {
+            const dataAgendamento = DateTime.fromFormat(ag.getDataConsulta, "dd/MM/yyyy");
+            const horaAgendamento = DateTime.fromFormat(ag.getHoraInicio, "HHmm");
+
+            if(ag.getPaciente.getCPF === CPF && dataAgendamento > agora || (dataAgendamento.equals(agora) && horaAgendamento > agora))
+                return ag
+        });
+
+        return agendamento;
+    }
+
      /**
      * Agenda uma nova consulta.
      * 

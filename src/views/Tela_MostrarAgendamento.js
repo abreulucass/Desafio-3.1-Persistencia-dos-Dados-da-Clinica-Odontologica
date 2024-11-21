@@ -33,7 +33,6 @@ export class Tela_MostrarAgendamento{
     }
 
     static body(agendamentos, dataIni, dataFim){
-        console.clear()
         if(agendamentos[0] == null){
             console.log("Nao ha nenhum agendamento");
             return 0;
@@ -67,9 +66,9 @@ export class Tela_MostrarAgendamento{
 
             console.log(
                 `${horaInicial.padStart(16, " ")}  ${horaFinal.padStart(5, " ")}  ${tempoConsulta.padStart(
-                    6,
+                    5,
                     " "
-                )}  ${nome} ${dataNascimento.toLocaleString()}`
+                )}   ${nome} ${dataNascimento.toLocaleString()}`
             );
         });
 

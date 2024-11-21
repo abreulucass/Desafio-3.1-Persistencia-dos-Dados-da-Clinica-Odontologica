@@ -57,12 +57,12 @@ while(1) {
                         break;
                     case '3':
                         const ordemCPF = PacienteController.mostrarPaciente_ordCPF(consultorio);
-                        Tela_MostrarPaciente.body(ordemCPF);
+                        Tela_MostrarPaciente.body(ordemCPF, consultorio	);
                         prompt();
                         break;
                     case '4':
                         const ordemNome = PacienteController.mostrarPaciente_ordNome(consultorio);
-                        Tela_MostrarPaciente.body(ordemNome);
+                        Tela_MostrarPaciente.body(ordemNome, consultorio);
                         prompt();
                         break;
                     case '5':
