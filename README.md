@@ -7,4 +7,4 @@
 
  Para rodar um determinado código, utilize o comando ``` node ./src/index.js ``` substituindo o 'X' pelo numero da questão que deseja analisar.
 
- Para acessar a documentação entre no link
+ Para acessar a documentação entre no [Link](https://abreulucass.github.io/Desafio1.2-Agenda-Consultorio/)
