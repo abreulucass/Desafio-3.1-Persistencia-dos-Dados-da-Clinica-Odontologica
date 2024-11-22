@@ -135,12 +135,14 @@ export class PacienteController{
         var CPF = Tela_RemoverPaciente.inputCpf();
 
         if(!consultorio.pacienteExiste(CPF))
-            return -1;
+            return Tratar.ERRO(-15);
+        if(!consultorio.validarAgendamentoUnico(CPF))
+            return Tratar.ERRO(-23)
 
         const index = consultorio.buscarIndexPaciente(CPF)
 
-        const res = consultorio.removerPaciente(index)
+        consultorio.removerPaciente(index)
 
-        return res;
+        return 1;
     }
 }

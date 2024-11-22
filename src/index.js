@@ -48,9 +48,7 @@ while(1) {
                         break;
                     case '2':
                         const resRemover = PacienteController.removerPaciente(consultorio);
-                        if (resRemover === -1) {
-                            Tela_RemoverPaciente.PacienteNaoEncontrado();
-                        } else {
+                        if (resRemover === 1) {
                             Tela_RemoverPaciente.PacienteRemovido();
                         }
                         prompt();

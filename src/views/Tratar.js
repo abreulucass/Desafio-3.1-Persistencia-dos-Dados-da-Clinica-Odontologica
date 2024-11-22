@@ -26,5 +26,7 @@ export class Tratar{
             console.log("\nERRO: Agendamento não encontrado\n")
         if(numErr == -22)
             console.log("\nERRO: Agendamento não é futuro\n")
+        if(numErr == -23)
+            console.log("\nERRO: Este paciente possui um agendamento futuro")
     }   
 }
