@@ -21,43 +21,22 @@ export class ValidarInput {
             return false;
         }
 
-        const [J, K] = [...CPF.slice(9, 11)].map(Number);
-        const digitos = [...CPF.slice(0, 11)].map(Number);
-        const result = (soma) => soma % 11;
-
-        let soma = 0;
-        for (let i = 0; i < 9; i++) {
-            soma += digitos[i] * (10 - i);
+        if (CPF.length !== 11 || /^(\d)\1{10}$/.test(CPF)) {
+            return false;
         }
+    
+        const calcularDigito = (base, pesoInicial) => {
+            const soma = base.split('').reduce((acc, num, index) => acc + num * (pesoInicial - index), 0);
+            const resto = soma % 11;
+            return resto < 2 ? 0 : 11 - resto;
+        };
+    
+        const base = CPF.slice(0, 9);
+        const digito1 = calcularDigito(base, 10);
+        const digito2 = calcularDigito(base + digito1, 11);
+    
+        return CPF.endsWith(`${digito1}${digito2}`);
 
-        const r1 = result(soma);
-        if (r1 == 0 || r1 == 1) {
-            if (J != 0) {
-                return false;
-            }
-        } else if (r1 >= 2 && r1 <= 10) {
-            if (J != (11 - r1)) {
-                return false;
-            }
-        }
-
-        soma = 0;
-        for (let i = 0; i < 10; i++) {
-            soma += digitos[i] * (11 - i);
-        }
-
-        const r2 = result(soma);
-        if (r2 == 0 && r2 == 1) {
-            if (K != 0) {
-                return false;
-            }
-        } else if (r2 >= 2 || r2 <= 10) {
-            if (K != (11 - r2)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**
@@ -91,7 +70,7 @@ export class ValidarInput {
      * @param {string} horaIni - A hora de início da consulta no formato "HHmm".
      * @returns {boolean} Retorna `true` se o agendamento for no futuro, caso contrário, retorna `false`.
      */
-    static validarPeriodoFuturo(dt_consulta, horaIni) {
+    static isPeriodoFuturo(dt_consulta, horaIni) {
         const agora = DateTime.now();
         const dataHoraConsulta = DateTime.fromFormat(`${dt_consulta} ${horaIni}`, "dd/MM/yyyy HHmm");
 
@@ -108,6 +87,10 @@ export class ValidarInput {
         if (!regexHora.test(hora))
             return false;
 
+        if(hora.slice(0, 2) < 8 || hora.slice(0, 2) > 19){
+            return false;
+        }
+
         const minutos = parseInt(hora.slice(2), 10);
         return minutos % 15 === 0;
     }
@@ -119,7 +102,7 @@ export class ValidarInput {
      * @param {string} horaFinal - A hora de término no formato "HHmm".
      * @returns {boolean} Retorna `true` se a hora inicial for anterior à hora final, caso contrário, retorna `false`.
      */
-    static validarHoraInicialFinal(horaInicial, horaFinal) {
+    static isHoraInicialAnteriorAFinal(horaInicial, horaFinal) {
         return parseInt(horaFinal) > parseInt(horaInicial);
     }
 }

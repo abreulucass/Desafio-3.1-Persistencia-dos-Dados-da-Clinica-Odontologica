@@ -12,9 +12,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "jsdoc": "^4.0.4",
     "luxon": "^3.5.0",
     "nodemon": "^3.1.7",
-    "prompt-sync": "^4.2.0"
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "prompt-sync": "^4.2.0",
+    "sequelize": "^6.37.5"
   }
 }

@@ -1,8 +1,7 @@
-import { ConsultaService } from "../service/ConsultaService.js";
-import { ValidarInput } from "../validators/validarInput.js";
-import { Tela_AgendamentoConsulta } from "../views/Tela_AgendamentoConsulta.js";
-import { Tela_MostrarAgendamento } from "../views/Tela_MostrarAgendamento.js";
-import { Tratar } from "../views/Tratar.js";
+import repositoryConsulta from "../models/repository/RepositoryConsulta.js";
+import { Result } from "../helpers/result.js";
+import { Consulta } from "../models/Consulta.js";
+
 
 /**
 * Controller responsável pelo gerenciamento de consultas no sistema.
@@ -11,137 +10,102 @@ import { Tratar } from "../views/Tratar.js";
 
 export class ConsultaController{
 
-    /**
-    * Realiza o cadastro de uma nova consulta no sistema.
-    * 
-    * Verifica se o paciente existe, se não há agendamento anterior, se os dados fornecidos são válidos
-    * (data, hora), e se o agendamento não está sobrepondo outros já existentes.
-    *
-    * @param {Object} consultorio - Objeto representando o consultório onde as consultas serão agendadas.
-    * @returns {boolean} Retorna `true` se o agendamento for realizado com sucesso, 
-    * caso contrário retorna um código de erro.
-    */
     
-    static cadastrarConsulta(consultorio){
-        console.clear()
-        const CPF = Tela_AgendamentoConsulta.inputCpf()
+    async isPacientePossuiAgendamentoPendente(cpf){
+        let listaConsultasPaciente = await repositoryConsulta.buscarConsultasPorCPF(cpf)
 
-        if(!consultorio.pacienteExiste(CPF)){
-            return Tratar.ERRO(-15)
+        if(listaConsultasPaciente.length !== 0){
+            listaConsultasPaciente = listaConsultasPaciente.map(agendamento => agendamento.dataValues)
+
+            const consultasFuturas = listaConsultasPaciente.filter(agendamento => {
+                const dataHoraConsulta = new Date(`${agendamento.dtConsulta}T${agendamento.horaInicio}`);
+                return dataHoraConsulta > new Date();
+            });
+
+            if(consultasFuturas.length !== 0){
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+
+    async agendarConsulta(consulta){
+        let listaAgendamentos = await repositoryConsulta.buscarConsultasPorData(consulta.DataConsulta)
+
+
+        if(listaAgendamentos.length !== 0){
+            listaAgendamentos = listaAgendamentos.map(agendamento => agendamento.dataValues)
+
+
+            const sobreposto = listaAgendamentos.some(agendamento => {
+                console.log(agendamento.dtConsulta, consulta.DataConsulta)
+                console.log(consulta.horaIni, consulta.horaFim)
+                console.log(agendamento.horaInicio, agendamento.horaFim)
+                return (
+                    agendamento.dtConsulta === consulta.DataConsulta && 
+                    (
+                        (consulta.horaIni >= agendamento.horaInicio && consulta.horaIni < agendamento.horaFim) ||
+                        (consulta.horaFim > agendamento.horaInicio && consulta.horaFim <= agendamento.horaFim) ||
+                        (consulta.horaIni <= agendamento.horaInicio && consulta.horaFim >= agendamento.horaFim)
+                    )
+                );
+            });
+
+            if (sobreposto) {
+                return Result.failure(-2);
+            } 
         }
 
-        if(!consultorio.validarAgendamentoUnico(CPF)){
-            return Tratar.ERRO(-16)
-        }
-
-        const data = Tela_AgendamentoConsulta.inputData()
-
-        if(!ValidarInput.estruturaData(data)){
-            return Tratar.ERRO(-13)
-        }
-
-        const horaIni = Tela_AgendamentoConsulta.inputHoraIni()
-
-        if(!ValidarInput.validarHora(horaIni)){
-            return Tratar.ERRO(-17)
-        }
-
-        if(!ValidarInput. validarPeriodoFuturo(data, horaIni)){
-            return Tratar.ERRO(-17)
-        }
-
-        const horaFim = Tela_AgendamentoConsulta.inputHoraFim()
-
-        if(!ValidarInput.validarHora(horaFim)){
-            return Tratar.ERRO(-17)
-        }
-
-        if(!ValidarInput.validarHoraInicialFinal(horaIni, horaFim)){
-            return Tratar.ERRO(-17)
-        }
-
-        if(!ConsultaService.horaDentroDoHorario(horaIni, horaFim)){
-            return Tratar.ERRO(-18)
-        }
+        const result = Consulta.objFactory(consulta.CPF, consulta.DataConsulta, consulta.horaIni, consulta.horaFim);
         
-        if(!consultorio.validarSobreposicaoConsulta(data, horaIni, horaFim)){
-            return Tratar.ERRO(-19)
+        if (result.isSuccess){
+            const agendamento = result.value;
+            await repositoryConsulta.salva(agendamento)
+            return result;
+        } else {
+            return result;
         }
-
-        const paciente = consultorio.buscarPaciente(CPF);
-
-        var consulta = ConsultaService.agendarConsulta(paciente, data, horaIni, horaFim);
-
-        if(!consulta){
-            return  Tratar.ERRO(-20);
-        }
-
-
-        const res = consultorio.agendarConsulta(consulta);
-
-        return res;
     }
 
-    /**
-    * Realiza a listagem de todos os agendamentos ou de agendamentos dentro de um período específico.
-    * 
-    * @param {Object} consultorio - Objeto representando o consultório de onde serão listados os agendamentos.
-    * @returns {Array} Retorna um array contendo os agendamentos encontrados e as datas inicial e final do período, 
-    * caso o usuário tenha especificado um período.
-    */
+    async listarTodosAgendamento(){
+        let listaAgendamentos = await repositoryConsulta.buscarTodas();
 
-    static listarAgendamento(consultorio){
-        const [res, dataIni, dataFim] = Tela_MostrarAgendamento.ApresentarAgenda()
+        if(listaAgendamentos.length === 0){
+            return null;
+        }
 
-        const agendamentos = consultorio.listarAgenda(res, dataIni, dataFim)
+        listaAgendamentos = listaAgendamentos.map(agendamento => agendamento.dataValues)
 
-        return [agendamentos, dataIni, dataFim]
+        return listaAgendamentos;
     }
 
-    /**
-    * Realiza o cancelamento de um agendamento de consulta.
-    * 
-    * Verifica se o paciente existe, se os dados da consulta são válidos e se o agendamento é futuro.
-    * 
-    * @param {Object} consultorio - Objeto representando o consultório onde o agendamento será cancelado.
-    * @returns {boolean} Retorna `true` se o cancelamento for realizado com sucesso, 
-    * caso contrário retorna um código de erro.
-    */
+    async listarPeriodoAgendamento(ini, fim){
+        let listaAgendamentos = await repositoryConsulta.buscarPorPeriodo(ini, fim);
 
-    static cancelarAgendamento(consultorio){
-        console.clear()
-        const CPF = Tela_AgendamentoConsulta.inputCpf()
-
-        if(!consultorio.pacienteExiste(CPF)){
-            return Tratar.ERRO(-15)
+        if(listaAgendamentos.length === 0){
+            return null;
         }
 
-        const data = Tela_AgendamentoConsulta.inputData()
+        listaAgendamentos = listaAgendamentos.map(agendamento => agendamento.dataValues)
 
-        if(!ValidarInput.estruturaData(data)){
-            return Tratar.ERRO(-13)
+        return listaAgendamentos;
+    }
+
+    async cancelarConsulta(form){
+
+        const consulta = await repositoryConsulta.buscarConsultaPorCpfEData(form.CPF, form.dtConsulta, form.horaInicio)
+
+        if(consulta === null){
+            return Result.failure(-1)
         }
 
-        const horaIni = Tela_AgendamentoConsulta.inputHoraIni()
+        await repositoryConsulta.remove(consulta)
 
-        if(!ValidarInput.validarHora(horaIni)){
-            return Tratar.ERRO(-17)
-        }
-
-        if(!ValidarInput. validarPeriodoFuturo(data, horaIni)){
-            return Tratar.ERRO(-17)
-        }
-
-        const res = consultorio.cancelarAgendamento(CPF, data, horaIni)
-
-        if(res == -1){
-            return Tratar.ERRO(-21)
-        }
-
-        if(res == -1){
-            return Tratar.ERRO(-22)
-        }
-
-        return res;
+        return Result.success(true)
     }
 }
+
+const consultaController = new ConsultaController();
+
+export default consultaController;

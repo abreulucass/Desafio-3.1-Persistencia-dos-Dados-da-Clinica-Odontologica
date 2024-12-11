@@ -1,56 +1,30 @@
+import { Model } from "sequelize";
+import { Result } from "../helpers/result.js";
 /**
  * Representa um paciente no consultório.
  * @class Paciente
  */
-export class Paciente {
-    
-    // Atributos privados
-    #CPF;
-    #nome;
-    #dataNascimento;
-    #idade;
+export class Paciente extends Model{
+    static objFactory(cpf, nome, dtNascimento, idade) {
+        const errors = [];
 
-    /**
-     * Cria uma instância de um paciente.
-     * 
-     * @param {string} CPF - O CPF do paciente.
-     * @param {string} nome - O nome do paciente.
-     * @param {string} dataNascimento - A data de nascimento do paciente no formato "dd/MM/yyyy".
-     * @param {number} idade - A idade do paciente.
-     */
-    constructor(CPF, nome, dataNascimento, idade) {
-        this.#CPF = CPF;
-        this.#nome = nome;
-        this.#dataNascimento = dataNascimento;
-        this.#idade = idade;
+        if (cpf === null || cpf.length !== 11)
+            errors.push(-1);
+
+        if (nome === null || nome.length < 4)
+            errors.push(-2);
+
+        if(dtNascimento === null)
+            errors.push(-3);
+
+        if (idade === null || idade < 13)
+            errors.push(-4);
+
+        // ATENÇÃO!
+        // Objetos mapeados para o BD NÃO podem ser criados com new
+        // Deve ser usado o método estático "build"
+        return errors.length == 0
+            ? Result.success(Paciente.build({ cpf, nome, dtNascimento, idade }))
+            : Result.failure(errors);
     }
-
-    /**
-     * Retorna o CPF do paciente.
-     * 
-     * @returns {string} O CPF do paciente.
-     */
-    get getCPF() { return this.#CPF; }
-
-    /**
-     * Retorna o nome do paciente.
-     * 
-     * @returns {string} O nome do paciente.
-     */
-    get getNome() { return this.#nome; }
-
-    /**
-     * Retorna a data de nascimento do paciente.
-     * 
-     * @returns {string} A data de nascimento do paciente no formato "dd/MM/yyyy".
-     */
-    get getDataNascimento() { return this.#dataNascimento; }
-
-    /**
-     * Retorna a idade do paciente.
-     * 
-     * @returns {number} A idade do paciente.
-     */
-    get getIdade() { return this.#idade; }
-
 }
