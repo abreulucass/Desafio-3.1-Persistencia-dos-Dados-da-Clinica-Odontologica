@@ -2,6 +2,11 @@ import PromptSync from "prompt-sync"
 const prompt = PromptSync();
 
 export class View_MenuCadastro{
+    
+     /**
+     * Método responsável por exibir o menu de cadastro de pacientes e retornar a opção escolhida pelo usuário.
+     * Exibe as opções de cadastrar, excluir, listar pacientes e voltar para o menu principal.
+     */
     static init(){
         console.clear()
         console.log("\tMenu do Cadastro de Pacientes");

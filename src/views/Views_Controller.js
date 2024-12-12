@@ -13,6 +13,9 @@ import { View_MostrarAgendamentos } from "./AgendamentoViews/View_MostrarAgendam
  * O menu principal permite navegar entre o cadastro de pacientes, agendamento de consultas e o encerramento do sistema.
  */
 class View_Controller{
+     /**
+     * Método que inicializa o controlador de views e executa o fluxo principal de navegação do sistema.
+     */
     async init(){
         while(1) {
             // Exibe o menu principal e espera a escolha do usuário
@@ -24,7 +27,6 @@ class View_Controller{
                 case '1':
                     let sair = 0;
                     while(1) {
-                        // Exibe o menu de cadastro de pacientes
                         switch(View_MenuCadastro.init()){
                             case '1':
                                 await View_CadastroPaciente.init();

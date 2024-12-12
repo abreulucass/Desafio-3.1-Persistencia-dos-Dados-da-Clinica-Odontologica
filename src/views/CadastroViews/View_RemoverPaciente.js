@@ -6,6 +6,10 @@ const prompt = PromptSync()
 
 export class View_RemoverPaciente{
 
+     /**
+     * Função responsável por remover um paciente, dado o seu CPF.
+     * A função valida se o CPF é válido, verifica se o paciente está cadastrado e, se possível, o remove.
+     */
     static async init(){
         console.clear()
         const CPF = prompt("CPF: ")

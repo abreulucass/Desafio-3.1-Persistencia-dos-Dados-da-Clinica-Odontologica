@@ -8,6 +8,11 @@ import { utils } from "../../helpers/utils.js";
 const prompt = PromptSync();
 
 export class View_AgendarConsulta{
+    
+     /**
+     * Inicia o processo de agendamento de uma consulta para um paciente.
+     * O método realiza as validações necessárias e interage com o usuário até que todos os dados sejam válidos.
+     */
     static async init(){
         console.clear()
         const formAgenda = {CPF: '', DataConsulta: '', horaIni: '', horaFim: ''};

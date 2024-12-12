@@ -11,10 +11,20 @@ import consultaController from "./ConsultaController.js";
 
 export class PacienteController{
 
+     /**
+     * Verifica se um paciente existe no sistema.
+     * @param {string} cpf - O CPF do paciente a ser verificado.
+     * @returns {Promise<Object|null>} - Retorna o objeto do paciente se existir, ou null caso contrário.
+     */
     async isPacienteExiste(cpf){
         return await repositoryPaciente.buscaPorCpf(cpf);
     }
 
+    /**
+     * Cadastra um novo paciente no sistema.
+     * @param {Object} form - Objeto contendo os dados do paciente (CPF, Nome, DataNascimento, Idade).
+     * @returns {Promise<Result>} - Retorna um objeto de resultado (sucesso ou falha).
+     */
     async cadastrarPaciente(form){
         const result = Paciente.objFactory(form.CPF, form.Nome, form.DataNascimento, form.Idade);
         
@@ -27,6 +37,10 @@ export class PacienteController{
         }
     }
 
+    /**
+     * Consulta e lista todos os pacientes ordenados por CPF.
+     * @returns {Promise<Array<Object>|null>} - Retorna uma lista de pacientes ou null se não houver pacientes.
+     */
     async consultarPacientes_ordCpf(){
         let listaPaciente = await repositoryPaciente.buscaOrdemCpf();
 
@@ -39,6 +53,10 @@ export class PacienteController{
         return listaPaciente;
     }
 
+    /**
+     * Consulta e lista todos os pacientes ordenados por Nome.
+     * @returns {Promise<Array<Object>|null>} - Retorna uma lista de pacientes ou null se não houver pacientes.
+     */
     async consultarPacientes_ordNome(){
         let listaPaciente = await repositoryPaciente.buscaOrdemNome();
 
@@ -51,7 +69,11 @@ export class PacienteController{
         return listaPaciente;
     }
 
-
+    /**
+     * Remove um paciente do sistema caso ele não possua agendamentos pendentes.
+     * @param {string} cpf - O CPF do paciente a ser removido.
+     * @returns {Promise<Result>} - Retorna um objeto de resultado (sucesso ou falha).
+     */
     async removerPaciente(cpf){
         if(!await consultaController.isPacientePossuiAgendamentoPendente(cpf)){
 

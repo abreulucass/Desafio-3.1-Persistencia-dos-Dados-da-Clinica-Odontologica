@@ -6,6 +6,11 @@ import { utils } from "../../helpers/utils.js"
 const prompt = PromptSync()
 
 export class View_CancelarConsulta{
+    
+    /**
+     * Inicia o processo de cancelamento de uma consulta.
+     * O método realiza as validações necessárias e interage com o usuário até que todos os dados sejam válidos.
+     */
     static async init(){
         const formCancelar = {CPF: '', dtConsulta: '', horaInicio: ''}
         const inputCPF = prompt("CPF: ")

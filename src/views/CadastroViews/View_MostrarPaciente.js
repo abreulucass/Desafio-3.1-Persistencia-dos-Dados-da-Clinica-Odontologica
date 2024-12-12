@@ -6,6 +6,10 @@ const prompt = PromptSync();
 
 export class View_MostrarPaciente{
 
+    /**
+     * Exibe a lista de pacientes ordenados por nome.
+     * Para cada paciente, exibe informações como CPF, nome, data de nascimento, idade e consultas agendadas.
+     */
     static async init_ordemNome(){
         const listaPaciente = await pacienteController.consultarPacientes_ordNome();
 
@@ -36,7 +40,11 @@ export class View_MostrarPaciente{
 
         return prompt()
     }
-    
+
+     /**
+     * Exibe a lista de pacientes ordenados por CPF.
+     * Para cada paciente, exibe informações como CPF, nome, data de nascimento, idade e consultas agendadas.
+     */
     static async init_ordemCPF(){
         const listaPaciente = await pacienteController.consultarPacientes_ordCpf();
 

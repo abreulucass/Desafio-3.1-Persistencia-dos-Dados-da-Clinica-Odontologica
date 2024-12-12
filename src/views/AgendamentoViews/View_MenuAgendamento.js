@@ -2,6 +2,13 @@ import PromptSync from "prompt-sync";
 const prompt = PromptSync();
 
 export class View_MenuAgendamento{
+    
+    /**
+     * Exibe o menu de agendamento de consultas e coleta a escolha do usuário.
+     * O menu oferece opções para agendar, cancelar ou listar agendamentos de consultas.
+     * 
+     * @returns {string} Retorna a opção escolhida pelo usuário no menu.
+     */
     static init(){
         console.clear()
         console.log("\tAgenda\n")

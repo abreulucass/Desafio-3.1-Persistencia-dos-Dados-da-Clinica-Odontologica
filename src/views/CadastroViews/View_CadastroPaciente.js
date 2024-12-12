@@ -6,6 +6,11 @@ import pacienteController from "../../controllers/PacienteController.js";
 const prompt = PromptSync();
 
 export class View_CadastroPaciente{
+    
+     /**
+     * Método principal que gerencia o processo de cadastro de um paciente.
+     * Recebe dados do usuário, valida-os e interage com o controlador de pacientes.
+     */
     static async init(){
         console.clear()
         const formCadastro = {CPF: '', Nome: '', DataNascimento: '', Idade: ''};

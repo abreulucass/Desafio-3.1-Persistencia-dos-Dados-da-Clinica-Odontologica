@@ -5,10 +5,18 @@ import dbconfig from "./config.js";
 import createModelConsulta from "./schema/consulta.js";
 import createModelPaciente from "./schema/paciente.js";
 
+/**
+ * Classe responsável pela conexão e inicialização do banco de dados.
+ * Configura o Sequelize, define os modelos e estabelece as relações entre as tabelas.
+ */
 class Db{
 
     #sequelize;
 
+    /**
+     * Inicializa a conexão com o banco de dados e configura os modelos e as associações.
+     * @returns {Promise<boolean>} - Retorna true se a conexão e a sincronização forem bem-sucedidas, false em caso de erro.
+     */
     async init(){
         this.#sequelize = new Sequelize(
             dbconfig.database,

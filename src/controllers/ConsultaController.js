@@ -10,7 +10,11 @@ import { Consulta } from "../models/Consulta.js";
 
 export class ConsultaController{
 
-    
+    /**
+     * Verifica se um paciente possui agendamentos pendentes no futuro.
+     * @param {string} cpf - O CPF do paciente a ser verificado.
+     * @returns {Promise<boolean>} - Retorna true se houver consultas futuras, false caso contrário.
+     */
     async isPacientePossuiAgendamentoPendente(cpf){
         let listaConsultasPaciente = await repositoryConsulta.buscarConsultasPorCPF(cpf)
 
@@ -30,6 +34,11 @@ export class ConsultaController{
         }
     }
 
+    /**
+     * Agenda uma nova consulta para um paciente.
+     * @param {Object} consulta - Objeto contendo as informações da consulta (CPF, DataConsulta, horaIni, horaFim).
+     * @returns {Promise<Result>} - Retorna um objeto de resultado (sucesso ou falha).
+     */
     async agendarConsulta(consulta){
         let listaAgendamentos = await repositoryConsulta.buscarConsultasPorData(consulta.DataConsulta)
 
@@ -68,6 +77,10 @@ export class ConsultaController{
         }
     }
 
+    /**
+     * Lista todos os agendamentos de consulta registrados no sistema.
+     * @returns {Promise<Array<Object>|null>} - Retorna uma lista de agendamentos ou null se não houver agendamentos.
+     */
     async listarTodosAgendamento(){
         let listaAgendamentos = await repositoryConsulta.buscarTodas();
 
@@ -80,6 +93,12 @@ export class ConsultaController{
         return listaAgendamentos;
     }
 
+     /**
+     * Lista os agendamentos de consulta dentro de um intervalo de datas.
+     * @param {string} ini - Data de início do período.
+     * @param {string} fim - Data de fim do período.
+     * @returns {Promise<Array<Object>|null>} - Retorna uma lista de agendamentos ou null se não houver agendamentos no período.
+     */
     async listarPeriodoAgendamento(ini, fim){
         let listaAgendamentos = await repositoryConsulta.buscarPorPeriodo(ini, fim);
 
@@ -92,6 +111,11 @@ export class ConsultaController{
         return listaAgendamentos;
     }
 
+    /**
+     * Cancela uma consulta previamente agendada.
+     * @param {Object} form - Objeto contendo os dados necessários para identificar a consulta (CPF, dtConsulta, horaInicio).
+     * @returns {Promise<Result>} - Retorna um objeto de resultado (sucesso ou falha).
+     */
     async cancelarConsulta(form){
 
         const consulta = await repositoryConsulta.buscarConsultaPorCpfEData(form.CPF, form.dtConsulta, form.horaInicio)

@@ -42,7 +42,12 @@ export class utils {
     
         return dataFormatada;
     }
-
+    
+    /**
+    * Formata uma string de hora no formato "HHMM" para o formato "HH:MM".
+    * @param {string} horaHHMM - A string representando a hora no formato "HHMM" (ex: "0930" para 09:30).
+    * @returns {string} - Retorna a hora formatada no padrão "HH:MM".
+    */
     static formatarHoraHHMMparaTIME = (horaHHMM) => {
         const horas = horaHHMM.slice(0, 2);
         const minutos = horaHHMM.slice(2, 4);

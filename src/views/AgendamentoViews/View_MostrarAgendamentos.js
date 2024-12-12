@@ -8,6 +8,16 @@ const prompt = PromptSync();
 
 export class View_MostrarAgendamentos{
 
+    /**
+     * Exibe a lista de agendamentos de consultas com base na escolha do usuário: 
+     * - Todos os agendamentos ou 
+     * - Agendamentos em um período específico.
+     * 
+     * O usuário é solicitado a informar se deseja exibir todos os agendamentos ou filtrar por um intervalo de datas. 
+     * O sistema valida as entradas e exibe as informações de agendamentos, incluindo nome do paciente, data de nascimento e o tempo da consulta.
+     * 
+     * @returns {string} Retorna o prompt para o usuário após a exibição da agenda.
+     */
     static async init(){
         console.clear()
         while(1){
